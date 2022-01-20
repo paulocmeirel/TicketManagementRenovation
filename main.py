@@ -157,21 +157,20 @@ class automacaoHandover():
         try:
             camposProblema = ['ID', 'DATA', 'ID_APART', 'PROBLEMA']
             dfProblemas = pd.DataFrame(self.problemas, columns=self.colunas)
-            dfProblemas.drop(['Pendencias','Categoria','Observação','Origem','Responsável','Nível de ciriticidade',
+            dfProblemas.drop(['Categoria','Observação','Origem','Responsável','Nível de criticidade',
                               'Tempo Decorrido','Status','Salvar','TempoInsert'],axis = 1, inplace=True)
             tabelaProblema = 'TBL_HANDOVER'
             for i in range(len(dfProblemas)):
                 try:
                     conecta_banco.input_values(self.db, tabelaProblema, tuple(camposProblema), dfProblemas.loc[i])
                 except Exception as ex:
-                    aux = []
-                    logProblema = 'TBL_LOG'
-                    camposLog = ['ID','DATA','PROBLEMA']
+                    conn = sqlite3.Connection(self.db)
                     tempoLog = datetime.now()
-                    aux.append(dfProblemas.loc[i][0])
-                    aux.append(tempoLog)
-                    aux.append(ex)
-                    conecta_banco.input_values(self.db, logProblema, tuple(camposLog), [aux])
+                    logProblema = f"""INSERT INTO TBL_LOG (ID, DATA, PROBLEMA) VALUES ('{dfProblemas.loc[i][0]}','{tempoLog}','{ex}')"""
+                    cursor = conn.cursor()
+                    cursor.execute(logProblema)
+                    conn.commit()
+                    cursor.close()
 
         except Exception as ex:
             print(ex)
@@ -193,7 +192,3 @@ class automacaoHandover():
 if __name__ == '__main__':
     START = automacaoHandover()
     START.orquestrador()
-
-# ATENDENTE É A COLUNA N
-# ORIGEM DO CHAMADO COLUNA F
-# ORIGEM DO CHAMADO COLUNA D (DE FORA OU DO PMO)
