@@ -30,7 +30,7 @@ class automacaoHandover():
 
         # NOME DAS COLUNAS DO DATAFRAME
         self.colunas = ['ID','Data','ID Apart','Origem','Categoria','Pendencias','Observação','Responsável',
-                        'Nível de criticidade', 'Tempo Decorrido','Status']
+                        'Nível de criticidade', 'Tempo Decorrido','Status','Salvar','TempoInsert']
 
         # LISTA DE PROBLEMAS
         self.problemas = []
@@ -158,7 +158,7 @@ class automacaoHandover():
             camposProblema = ['ID', 'DATA', 'ID_APART', 'PROBLEMA']
             dfProblemas = pd.DataFrame(self.problemas, columns=self.colunas)
             dfProblemas.drop(['Pendencias','Categoria','Observação','Origem','Responsável','Nível de ciriticidade',
-                              'Tempo Decorrido','Status'],axis = 1, inplace=True)
+                              'Tempo Decorrido','Status','Salvar','TempoInsert'],axis = 1, inplace=True)
             tabelaProblema = 'TBL_HANDOVER'
             for i in range(len(dfProblemas)):
                 try:
