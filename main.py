@@ -29,7 +29,8 @@ class automacaoHandover():
         self.conn = sqlite3.Connection(self.db)
 
         # NOME DAS COLUNAS DO DATAFRAME
-        self.colunas = ['ID','Data','ID Apart','Endereço','Origem','Ambiente','Tipo','Pendencias','Responsável']
+        self.colunas = ['ID','Data','ID Apart','Origem','Categoria','Pendencias','Observação','Responsável',
+                        'Nível de criticidade', 'Tempo Decorrido','Status']
 
         # LISTA DE PROBLEMAS
         self.problemas = []
@@ -92,77 +93,45 @@ class automacaoHandover():
             auxiliar1 = []
             try:
                 if '#' in arquivo['Extract'][i]:
-                    #auxiliar.append(mensagens['Message ID'][i])
+
+                    # CRIAÇÃO DE VARIÁVEIS
                     id = automacaoHandover.localizaData(arquivo['Message date'][i].replace(" ","")) + \
                          automacaoHandover.localizaApartamento(arquivo['Extract'][i].replace(" ","")) + \
                          automacaoHandover.localizaProblema(arquivo['Extract'][i]).replace(" ","")
-                    auxiliar.append(id) # ID
-                    auxiliar1.append(id)
-                    data = automacaoHandover.localizaData(arquivo['Message date'][i]).replace(" ","")
-                    auxiliar.append(data) # Data - Coluna B
-                    apartamento = automacaoHandover.localizaApartamento(arquivo['Extract'][i]).replace(" ","")
-                    auxiliar.append(apartamento)  # Apartamento - Coluna C
-                    auxiliar1.append(apartamento)
-                    auxiliar.append('') # Endereçopppppppppp
-                    auxiliar.append('FrontApp') # Coluna E
-                    auxiliar.append('') # Precisa saber o ambiente - Coluna F
-                    auxiliar.append('') # Precisa saber o tipo - Coluna G
-                    #auxiliar.append(localizaHora(mensagens['Message date'][i])) # Hora
+                    data = automacaoHandover.localizaData(arquivo['Message date'][i]).replace(" ", "")
+                    apartamento = automacaoHandover.localizaApartamento(arquivo['Extract'][i]).replace(" ", "")
                     problema = automacaoHandover.localizaProblema(arquivo['Extract'][i])
-                    auxiliar.append(problema)  # Problema(Pendencia) - Coluna H
-                    auxiliar1.append(problema)
-                    auxiliar1.append('Inserção')
-                    auxiliar1.append('')
                     agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
-                    auxiliar1.append(agora)
-                    auxiliar1.append('')
-                    #responsavel = self.mensagens['Attributed to'][i].replace(" ","")
-                    #auxiliar.append(responsavel) # Atribuido(Responsável) - Coluna I
-                    auxiliar.append('') # Atribuido(Responsável) - Coluna I
+
+                    # APPEND PARA LISTA DE PENDENCIAS (HANDOVER)
+                    #auxiliar.append(mensagens['Message ID'][i])
+                    auxiliar.append(id) # ID - Coluna A
+                    auxiliar.append(data)  # Data - Coluna B
+                    auxiliar.append(apartamento)  # Apartamento - Coluna C
+                    auxiliar.append('FrontApp') # Coluna D
+                    auxiliar.append('') # COLUNA E - CATEGORIA
+                    auxiliar.append(problema)  # Problema(Pendencia) - Coluna F
+                    auxiliar.append('') # COLUNA G - OBSERVAÇÃO
+                    auxiliar.append('') # COLUNA H - RESPONSÁVEL
+                    auxiliar.append('') # COLUNA I - NÍVEL DE CRITICIDADE
+                    auxiliar.append('') # COLUNA J - TEMPO DECORRIDO
+                    auxiliar.append("Novo") # COLUNA K - STATUS
+
+                    # APPEND PARA LISTA LOG
+                    auxiliar1.append(id) # ID - Coluna A
+                    auxiliar1.append(apartamento)  # Apartamento - Coluna B
+                    auxiliar1.append(problema) # COLUNA C - PENDENCIAS
+                    auxiliar1.append('') # COLUNA D - CATEGORIA
+                    auxiliar1.append("Novo")  # COLUNA E - STATUS
+                    auxiliar1.append('')  # COLUNA F - VALOR
+                    auxiliar1.append(agora) # COLUNA G - TEMPO DA ATUALIZAÇÃO
+
+                    # GERANDO LISTA DE LISTAS
                     self.problemas.append(auxiliar)
                     self.log.append(auxiliar1)
 
             except Exception as ex:
                 print(ex)
-
-        """
-        for i in range(len(self.mensagens)):
-            auxiliar = []
-            auxiliar1 = []
-            try:
-                if '#' in self.mensagens['Extract'][i]:
-                    #auxiliar.append(mensagens['Message ID'][i])
-                    id = automacaoHandover.localizaData(self.mensagens['Message date'][i].replace(" ","")) + \
-                         automacaoHandover.localizaApartamento(self.mensagens['Extract'][i].replace(" ","")) + \
-                         automacaoHandover.localizaProblema(self.mensagens['Extract'][i]).replace(" ","")
-                    auxiliar.append(id) # ID
-                    auxiliar1.append(id)
-                    data = automacaoHandover.localizaData(self.mensagens['Message date'][i]).replace(" ","")
-                    auxiliar.append(data) # Data - Coluna B
-                    apartamento = automacaoHandover.localizaApartamento(self.mensagens['Extract'][i]).replace(" ","")
-                    auxiliar.append(apartamento)  # Apartamento - Coluna C
-                    auxiliar1.append(apartamento)
-                    auxiliar.append('') # Endereçopppppppppp
-                    auxiliar.append('FrontApp') # Coluna E
-                    auxiliar.append('') # Precisa saber o ambiente - Coluna F
-                    auxiliar.append('') # Precisa saber o tipo - Coluna G
-                    #auxiliar.append(localizaHora(mensagens['Message date'][i])) # Hora
-                    problema = automacaoHandover.localizaProblema(self.mensagens['Extract'][i])
-                    auxiliar.append(problema)  # Problema(Pendencia) - Coluna H
-                    auxiliar1.append(problema)
-                    auxiliar1.append('Inserção')
-                    auxiliar1.append('')
-                    agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
-                    auxiliar1.append(agora)
-                    auxiliar1.append('')
-                    #responsavel = self.mensagens['Attributed to'][i].replace(" ","")
-                    #auxiliar.append(responsavel) # Atribuido(Responsável) - Coluna I
-                    auxiliar.append('') # Atribuido(Responsável) - Coluna I
-                    self.problemas.append(auxiliar)
-                    self.log.append(auxiliar1)
-
-            except Exception as ex:
-                print(ex)"""
 
         # INPUT NA TABELA
         #
@@ -186,22 +155,26 @@ class automacaoHandover():
         try:
             camposProblema = ['ID', 'DATA', 'ID_APART', 'PROBLEMA']
             dfProblemas = pd.DataFrame(self.problemas, columns=self.colunas)
-            dfProblemas.drop(['Endereço','Origem','Ambiente','Tipo','Responsável'],axis = 1, inplace=True)
+            dfProblemas.drop(['Pendencias','Categoria','Observação','Origem','Responsável','Nível de ciriticidade',
+                              'Tempo Decorrido','Status'],axis = 1, inplace=True)
             tabelaProblema = 'TBL_HANDOVER'
             for i in range(len(dfProblemas)):
                 try:
                     conecta_banco.input_values(self.db, tabelaProblema, tuple(camposProblema), dfProblemas.loc[i])
                 except Exception as ex:
+                    aux = []
                     logProblema = 'TBL_LOG'
                     camposLog = ['ID','DATA','PROBLEMA']
                     tempoLog = datetime.now()
-                    conecta_banco.input_values(self.db, logProblema, tuple(camposLog), [dfProblemas.loc[i][0],tempoLog,ex])
+                    aux.append(dfProblemas.loc[i][0])
+                    aux.append(tempoLog)
+                    aux.append(ex)
+                    conecta_banco.input_values(self.db, logProblema, tuple(camposLog), [aux])
 
         except Exception as ex:
             print(ex)
 
         # INPUT NA TABELA LOG
-
         j = 0
         for i in range(len(self.dataframeLog)):
             try:
@@ -213,7 +186,6 @@ class automacaoHandover():
                         j += 1
             except:
                 pass
-
 
 
 if __name__ == '__main__':
