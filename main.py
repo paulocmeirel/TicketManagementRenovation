@@ -116,6 +116,8 @@ class automacaoHandover():
                     auxiliar.append('') # COLUNA I - NÍVEL DE CRITICIDADE
                     auxiliar.append('') # COLUNA J - TEMPO DECORRIDO
                     auxiliar.append("Novo") # COLUNA K - STATUS
+                    auxiliar.append('') # COLUNA L - SALVAR
+                    auxiliar.append(agora) # COLUNA M - DATETIME PARA CALCULAR O TEMPO DECORRIDO DO PROCESSO
 
                     # APPEND PARA LISTA LOG
                     auxiliar1.append(id) # ID - Coluna A
