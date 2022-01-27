@@ -44,6 +44,7 @@ class automacaoHandover():
         self.columns = list(self.dataframe.iloc[0])
         self.dataframe = self.dataframe[1:]
         self.dataframe.columns = self.columns
+        self.dataframe.reset_index(drop=True, inplace=True)
 
         # SUBINDO WORKSHEET DA ABA LOG
         self.abaLog = 'Log'
