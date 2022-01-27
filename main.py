@@ -184,7 +184,7 @@ class automacaoHandover():
                     if self.log[j][0] in list(listaLog['ID']):
                         j += 1
                     else:
-                        self.wksLog.update_values(f'A{i+2}',[self.log[j]])
+                        self.wksLog.update_values(f'A{i+1}',[self.log[j]])
                         j += 1
             except:
                 pass
