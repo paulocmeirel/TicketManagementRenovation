@@ -37,7 +37,7 @@ class automacaoHandover():
         self.log = []
 
         # DATAFRAME DE MENSAGENS
-        #self.mensagens = pd.read_csv(Path(Path.home(), Path("Downloads","mensagens_whatsapp.csv")))
+        self.mensagens = pd.read_csv(Path(Path.home(), Path("Downloads","export-activities-c9db98ca0fb0e541671d-2022-01-27-1d-6debe5.csv")))
 
         # SUBINDO O WORKSHEET DA ABA PENDENCIAS - TRATAMENTO
         self.dataframe, self.wks = uteis.gsheets_to_dataframe(self.credencial, self.id_sheet, self.aba)
@@ -87,21 +87,21 @@ class automacaoHandover():
             return mensagem
 
 
-    def orquestrador(self, arquivo):
+    def orquestrador(self):
 
-        for i in range(len(arquivo)):
+        for i in range(len(self.mensagens)):
             auxiliar = []
             auxiliar1 = []
             try:
-                if '#' in arquivo['Extract'][i]:
+                if '#' in self.mensagens['Extract'][i]:
 
                     # CRIAÇÃO DE VARIÁVEIS
-                    id = automacaoHandover.localizaData(arquivo['Message date'][i].replace(" ","")) + \
-                         automacaoHandover.localizaApartamento(arquivo['Extract'][i].replace(" ","")) + \
-                         automacaoHandover.localizaProblema(arquivo['Extract'][i]).replace(" ","")
-                    data = automacaoHandover.localizaData(arquivo['Message date'][i]).replace(" ", "")
-                    apartamento = automacaoHandover.localizaApartamento(arquivo['Extract'][i]).replace(" ", "")
-                    problema = automacaoHandover.localizaProblema(arquivo['Extract'][i])
+                    id = automacaoHandover.localizaData(self.mensagens['Message date'][i].replace(" ","")) + \
+                         automacaoHandover.localizaApartamento(self.mensagens['Extract'][i].replace(" ","")) + \
+                         automacaoHandover.localizaProblema(self.mensagens['Extract'][i]).replace(" ","")
+                    data = automacaoHandover.localizaData(self.mensagens['Message date'][i]).replace(" ", "")
+                    apartamento = automacaoHandover.localizaApartamento(self.mensagens['Extract'][i]).replace(" ", "")
+                    problema = automacaoHandover.localizaProblema(self.mensagens['Extract'][i])
                     agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
 
                     # APPEND PARA LISTA DE PENDENCIAS (HANDOVER)
@@ -137,20 +137,29 @@ class automacaoHandover():
                 print(ex)
 
         # INPUT NA TABELA
-        #
-        j = 0
+        linhasVazias = []
+        problemasNaoPlotados = []
+
+        # PEGANDO OS IDS JÁ REGISTRADOS
         query = 'SELECT ID FROM TBL_HANDOVER'
         listaLog = pd.read_sql_query(f"{query}", self.conn)
+
+        # PEGANDO AS LINHAS VAZIAS
         for i in range(len(self.dataframe)):
+            if self.dataframe.iloc[i,0].replace(" ","") == '':
+                linhasVazias.append(i)
+
+        # PEGANDO OS PROBLEMAS QUE NÃO FORAM PLOTADOS
+        for j in range(len(self.problemas)):
+            if self.problemas[j][0] not in list(listaLog['ID']):
+                problemasNaoPlotados.append(self.problemas[j])
+
+        # PLOTANDO NA TABELA DO SHEETS
+        x = 0
+        for problema in problemasNaoPlotados:
             try:
-                if self.dataframe.iloc[i,0] == '':
-                    #self.wks.update_values(f'A{i + 3}', [self.problemas[j]])
-                    #j += 1
-                    if self.problemas[j][0] in list(listaLog['ID']):
-                        j += 1
-                    else:
-                        self.wks.update_values(f'A{i+3}',[self.problemas[j]])
-                        j += 1
+                self.wks.update_values(f'A{linhasVazias[x] + 3}', [problema])
+                x += 1
             except:
                 pass
 
@@ -177,17 +186,38 @@ class automacaoHandover():
             print(ex)
 
         # INPUT NA TABELA LOG
-        j = 0
+        # PEGANDO AS LINHAS VAZIAS NA TABELA LOG
+        linhasVazias = []
+        logNaoPlotados = []
         for i in range(len(self.dataframeLog)):
+            if self.dataframeLog.iloc[i, 0].replace(" ", "") == '':
+                linhasVazias.append(i)
+
+        # PEGANDO OS PROBLEMAS QUE NÃO FORAM PLOTADOS
+        for j in range(len(self.log)):
+            if self.log[j][0] not in list(listaLog['ID']):
+                logNaoPlotados.append(self.log[j])
+
+        # PLOTANDO NA TABELA DO SHEETS
+        x = 0
+        for log in logNaoPlotados:
             try:
-                if self.dataframeLog.iloc[i,0] == '':
-                    if self.log[j][0] in list(listaLog['ID']):
-                        j += 1
-                    else:
-                        self.wksLog.update_values(f'A{i+1}',[self.log[j]])
-                        j += 1
+                self.wksLog.update_values(f'A{linhasVazias[x] + 2}', [log])
+                x += 1
             except:
                 pass
+        ######################################
+        #j = 0
+        #for i in range(len(self.dataframeLog)):
+        #    try:
+        #        if self.dataframeLog.iloc[i,0] == '':
+        #            if self.log[j][0] in list(listaLog['ID']):
+        #                j += 1
+        #            else:
+        #                self.wksLog.update_values(f'A{i+1}',[self.log[j]])
+        #                j += 1
+        #    except:
+        #        pass
 
 
 if __name__ == '__main__':
