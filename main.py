@@ -37,7 +37,7 @@ class automacaoHandover():
         self.log = []
 
         # DATAFRAME DE MENSAGENS
-        self.mensagens = pd.read_csv(Path(Path.home(), Path("Downloads","export-activities-c9db98ca0fb0e541671d-2022-01-27-1d-6debe5.csv")))
+        #self.mensagens = pd.read_csv(Path(Path.home(), Path("Downloads","export-activities-c9db98ca0fb0e541671d-2022-01-27-1d-6debe5.csv")))
 
         # SUBINDO O WORKSHEET DA ABA PENDENCIAS - TRATAMENTO
         self.dataframe, self.wks = uteis.gsheets_to_dataframe(self.credencial, self.id_sheet, self.aba)
@@ -87,21 +87,21 @@ class automacaoHandover():
             return mensagem
 
 
-    def orquestrador(self):
+    def orquestrador(self, arquivo):
 
-        for i in range(len(self.mensagens)):
+        for i in range(len(arquivo)):
             auxiliar = []
             auxiliar1 = []
             try:
-                if '#' in self.mensagens['Extract'][i]:
+                if '#' in arquivo['Extract'][i]:
 
                     # CRIAÇÃO DE VARIÁVEIS
-                    id = automacaoHandover.localizaData(self.mensagens['Message date'][i].replace(" ","")) + \
-                         automacaoHandover.localizaApartamento(self.mensagens['Extract'][i].replace(" ","")) + \
-                         automacaoHandover.localizaProblema(self.mensagens['Extract'][i]).replace(" ","")
-                    data = automacaoHandover.localizaData(self.mensagens['Message date'][i]).replace(" ", "")
-                    apartamento = automacaoHandover.localizaApartamento(self.mensagens['Extract'][i]).replace(" ", "")
-                    problema = automacaoHandover.localizaProblema(self.mensagens['Extract'][i])
+                    id = automacaoHandover.localizaData(arquivo['Message date'][i].replace(" ","")) + \
+                         automacaoHandover.localizaApartamento(arquivo['Extract'][i].replace(" ","")) + \
+                         automacaoHandover.localizaProblema(arquivo['Extract'][i]).replace(" ","")
+                    data = automacaoHandover.localizaData(arquivo['Message date'][i]).replace(" ", "")
+                    apartamento = automacaoHandover.localizaApartamento(arquivo['Extract'][i]).replace(" ", "")
+                    problema = automacaoHandover.localizaProblema(arquivo['Extract'][i])
                     agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
 
                     # APPEND PARA LISTA DE PENDENCIAS (HANDOVER)
