@@ -123,11 +123,12 @@ class automacaoHandover():
                     # APPEND PARA LISTA LOG
                     auxiliar1.append(id) # ID - Coluna A
                     auxiliar1.append(apartamento)  # Apartamento - Coluna B
-                    auxiliar1.append(problema) # COLUNA C - PENDENCIAS
-                    auxiliar1.append('') # COLUNA D - CATEGORIA
-                    auxiliar1.append("Novo")  # COLUNA E - STATUS
-                    auxiliar1.append('')  # COLUNA F - VALOR
-                    auxiliar1.append(agora) # COLUNA G - TEMPO DA ATUALIZAÇÃO
+                    auxiliar1.append('FrontApp')  # COLUNA C - ORIGEM
+                    auxiliar1.append(problema) # COLUNA D - PENDENCIAS
+                    auxiliar1.append('') # COLUNA E - CATEGORIA
+                    auxiliar1.append("Novo")  # COLUNA F - STATUS
+                    auxiliar1.append('')  # COLUNA G - VALOR
+                    auxiliar1.append(agora) # COLUNA H - TEMPO DA ATUALIZAÇÃO
 
                     # GERANDO LISTA DE LISTAS
                     self.problemas.append(auxiliar)
