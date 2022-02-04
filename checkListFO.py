@@ -248,7 +248,7 @@ class checklistFO():
 if __name__ == '__main__':
     START = checklistFO()
     START.orquestradorFO()
-    schedule.every(1).minute.do(START.orquestradorFO)
+    schedule.every(1).hours.do(START.orquestradorFO)
 
     while True:
         schedule.run_pending()
