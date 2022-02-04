@@ -20,7 +20,7 @@ class checklistHO():
         self.credencial = Path(Path.home(), 'Documents', 'Git', Path('TicketManagementRenovation', 'keys.json'))
         self.aba = 'Respostas ao formulário 1'
         self.id_sheet = '1sMZ48_xeGff3KtGlJi1GWUNQhu1yFO2ptySTT7jN03c'
-        self.dataframe, self.wks = uteis.gsheets_to_dataframe(self.credencial, self.id_sheet, self.aba)
+
 
         self.caminhoBanco = Path(Path.home(), "Documents", Path("DBs", "dbTicketManager.db"))
         self.conn = sqlite3.connect(self.caminhoBanco)
@@ -44,14 +44,15 @@ class checklistHO():
 
     def orquestradorHO(self):
         # TRATAMENTO DAS TABELAS
-        self.dataframe = self.dataframe[self.dataframe['Código do Apartamento']!='']
-        self.dataframe = self.dataframe.iloc[:,:-6]
-        dataframeProblemas = self.dataframe[self.dataframe.eq('NOK')]
+        dataframe, wks = uteis.gsheets_to_dataframe(self.credencial, self.id_sheet, self.aba)
+        dataframe = dataframe[dataframe['Código do Apartamento']!='']
+        dataframe = dataframe.iloc[:,:-6]
+        dataframeProblemas = dataframe[dataframe.eq('NOK')]
         dataframeProblemas.dropna(axis=1,how='all', inplace=True)
-        informacoes = self.dataframe.iloc[:,0:5]
+        informacoes = dataframe.iloc[:,0:5]
         dataframeProblemas = pd.concat([informacoes,dataframeProblemas], axis = 1)
         dataframeProblemas.reset_index(drop=True,inplace=True)
-        self.dataframe.reset_index(drop=True, inplace=True)
+        dataframe.reset_index(drop=True, inplace=True)
 
         # LISTAS AUXILIARES
         problemas = []
@@ -62,10 +63,10 @@ class checklistHO():
         # SEPARANDO OS PROBLEMAS DAS COLUNAS COM NOK
         for problema in self.problemasComentarios:
             posicao = 0
-            for status in self.dataframe[problema]:
+            for status in dataframe[problema]:
                 if status != '':
-                    dataHora = datetime.strptime(self.dataframe['Carimbo de data/hora'][posicao], '%d/%m/%Y %H:%M:%S')
-                    apartamento = self.dataframe['Código do Apartamento'][posicao]
+                    dataHora = datetime.strptime(dataframe['Carimbo de data/hora'][posicao], '%d/%m/%Y %H:%M:%S')
+                    apartamento = dataframe['Código do Apartamento'][posicao]
                     id = dataHora.strftime("%Y-%m-%d") + apartamento + self.comodos[comodoIndice]+'-'+status.replace(" ","")
                     agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
                     pendencia = self.comodos[comodoIndice]+' - '+status
@@ -168,7 +169,7 @@ class checklistHO():
         abaLog = 'Log'
 
         # SUBINDO O WORKSHEET DA ABA PENDENCIAS - TRATAMENTO
-        ticket, wks = uteis.gsheets_to_dataframe(self.credencial, id_sheetTicket, aba)
+        ticket, wksTicket = uteis.gsheets_to_dataframe(self.credencial, id_sheetTicket, aba)
         columns = list(ticket.iloc[0])
         ticket = ticket[1:]
         ticket.columns = columns
@@ -193,7 +194,7 @@ class checklistHO():
         x = 0
         for problema in problemasNaoPlotados:
             try:
-                wks.update_values(f'A{linhasVazias[x] + 3}', [problema])
+                wksTicket.update_values(f'A{linhasVazias[x] + 3}', [problema])
                 x += 1
             except:
                 pass
