@@ -138,12 +138,13 @@ class checklistFO():
                         # APPEND PARA LISTA LOG
                         auxiliar1.append(id)  # ID - Coluna A
                         auxiliar1.append(apartamento)  # Apartamento - Coluna B
-                        auxiliar1.append('Checklist - FO') # COLUNA C - ORIGEM
-                        auxiliar1.append(problema)  # COLUNA D - PENDENCIAS
-                        auxiliar1.append('')  # COLUNA E - CATEGORIA
-                        auxiliar1.append("Novo")  # COLUNA F - STATUS
-                        auxiliar1.append('')  # COLUNA G - RESPONSAVEL
-                        auxiliar1.append(agora)  # COLUNA H - TEMPO DA ATUALIZAÇÃO
+                        auxiliar1.append(contato) # COLUNA C - CONTATO
+                        auxiliar1.append('Checklist - FO') # COLUNA D - ORIGEM
+                        auxiliar1.append(problema)  # COLUNA E - PENDENCIAS
+                        auxiliar1.append('')  # COLUNA F - CATEGORIA
+                        auxiliar1.append("Novo")  # COLUNA G - STATUS
+                        auxiliar1.append('')  # COLUNA H - RESPONSAVEL
+                        auxiliar1.append(agora)  # COLUNA I - TEMPO DA ATUALIZAÇÃO
 
                         problemas.append(auxiliar)
                         log.append(auxiliar1)
