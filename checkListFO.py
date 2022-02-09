@@ -69,31 +69,34 @@ class checklistFO():
                     id = dataHora.strftime("%Y-%m-%d") + apartamento + self.comodos[comodoIndice]+'-'+status.replace(" ","")
                     agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
                     pendencia = self.comodos[comodoIndice]+' - '+status
+                    contato = dataframe['Responsável pela vistoria'][posicao]
 
                     # APPEND PARA LISTA DE PENDENCIAS (HANDOVER)
                     auxiliar.append(id)  # ID - Coluna A
                     auxiliar.append(dataHora.strftime("%Y-%m-%d"))  # Data - Coluna B
-                    auxiliar.append(apartamento)  # Apartamento - Coluna C
-                    auxiliar.append('Checklist - FO')  # Coluna D
-                    auxiliar.append('')  # COLUNA E - CATEGORIA
-                    auxiliar.append(pendencia)  # Problema(Pendencia) - Coluna F
-                    auxiliar.append('')  # COLUNA G - OBSERVAÇÃO
-                    auxiliar.append('')  # COLUNA H - RESPONSÁVEL
-                    auxiliar.append('')  # COLUNA I - NÍVEL DE CRITICIDADE
-                    auxiliar.append('')  # COLUNA J - TEMPO DECORRIDO
-                    auxiliar.append("Novo")  # COLUNA K - STATUS
-                    auxiliar.append('')  # COLUNA L - SALVAR
-                    auxiliar.append(agora)  # COLUNA M - DATETIME PARA CALCULAR O TEMPO DECORRIDO DO PROCESSO
+                    auxiliar.append(contato) # CONTATO - COLUNA C
+                    auxiliar.append(apartamento)  # Apartamento - Coluna D
+                    auxiliar.append('Checklist - FO')  # Coluna E
+                    auxiliar.append('')  # COLUNA F - CATEGORIA
+                    auxiliar.append(pendencia)  # Problema(Pendencia) - Coluna G
+                    auxiliar.append('')  # COLUNA H - OBSERVAÇÃO
+                    auxiliar.append('')  # COLUNA I - RESPONSÁVEL
+                    auxiliar.append('')  # COLUNA J - NÍVEL DE CRITICIDADE
+                    auxiliar.append('')  # COLUNA K - TEMPO DECORRIDO
+                    auxiliar.append("Novo")  # COLUNA L - STATUS
+                    auxiliar.append('')  # COLUNA M - SALVAR
+                    auxiliar.append(agora)  # COLUNA N - DATETIME PARA CALCULAR O TEMPO DECORRIDO DO PROCESSO
 
                     # APPEND PARA LISTA LOG
                     auxiliar1.append(id)  # ID - Coluna A
                     auxiliar1.append(apartamento)  # Apartamento - Coluna B
-                    auxiliar1.append('Checklist - FO') # COLUNA C - ORIGEM
-                    auxiliar1.append(pendencia)  # COLUNA D - PENDENCIAS
-                    auxiliar1.append('')  # COLUNA E - CATEGORIA
-                    auxiliar1.append("Novo")  # COLUNA F - STATUS
-                    auxiliar1.append('')  # COLUNA G - VALOR
-                    auxiliar1.append(agora)  # COLUNA H - TEMPO DA ATUALIZAÇÃO
+                    auxiliar1.append(contato) # COLUNA C - CONTATO
+                    auxiliar1.append('Checklist - FO') # COLUNA D - ORIGEM
+                    auxiliar1.append(pendencia)  # COLUNA E - PENDENCIAS
+                    auxiliar1.append('')  # COLUNA F - CATEGORIA
+                    auxiliar1.append("Novo")  # COLUNA G - STATUS
+                    auxiliar1.append('')  # COLUNA H - VALOR
+                    auxiliar1.append(agora)  # COLUNA I - TEMPO DA ATUALIZAÇÃO
 
                     problemas.append(auxiliar)
                     log.append(auxiliar1)
@@ -114,10 +117,12 @@ class checklistFO():
                         apartamento = dataframeProblemas['Código do Apartamento'][posicao]
                         id = dataHora.strftime("%Y-%m-%d") + apartamento + problema.replace(" ","")
                         agora = datetime.now().replace(microsecond=0).strftime("%d/%m/%Y %H:%M:%S")
+                        contato = dataframeProblemas['Responsável pela vistoria'][posicao]
 
                         # APPEND PARA LISTA DE PENDENCIAS (HANDOVER)
                         auxiliar.append(id)  # ID - Coluna A
                         auxiliar.append(dataHora.strftime("%Y-%m-%d"))  # Data - Coluna B
+                        auxiliar.append(contato) # CONTATO - Coluna D
                         auxiliar.append(apartamento)  # Apartamento - Coluna C
                         auxiliar.append('Checklist - FO')  # Coluna D
                         auxiliar.append('')  # COLUNA E - CATEGORIA
@@ -150,12 +155,12 @@ class checklistFO():
                 posicao += 1
 
         # CRIAÇÃO DO DATAFRAME DE PROBLEMA
-        colunasTicket = ['ID', 'Data', 'ID Apart', 'Origem', 'Categoria', 'Pendencias', 'Observação', 'Responsável',
+        colunasTicket = ['ID', 'Data','Contato','ID Apart', 'Origem', 'Categoria', 'Pendencias', 'Observação', 'Responsável',
                         'Nível de criticidade', 'Tempo Decorrido', 'Status', 'Salvar', 'TempoInsert']
         dfProblemas = pd.DataFrame(problemas, columns = colunasTicket)
 
         # CRIAÇÃO DO DATAFRAME DE LOG
-        colunaLog = ['ID','ID Apart','Origem','Pendencias','Categoria','Status','Responsavel','TempoInsert']
+        colunaLog = ['ID','ID Apart','Contato','Contato','Origem','Pendencias','Categoria','Status','Responsavel','TempoInsert']
         dfLog = pd.DataFrame(log, columns = colunaLog)
 
         # DATAFRAME DOS PROBLEMAS QUE JÁ FORAM REGISTRADOS
@@ -202,7 +207,7 @@ class checklistFO():
         try:
             camposProblema = ['ID', 'DATA', 'ID_APART', 'PROBLEMA']
 
-            dfProblemas.drop(['Categoria', 'Observação', 'Origem', 'Responsável', 'Nível de criticidade',
+            dfProblemas.drop(['Categoria', 'Observação','Contato','Origem', 'Responsável', 'Nível de criticidade',
                               'Tempo Decorrido', 'Status', 'Salvar', 'TempoInsert'], axis=1, inplace=True)
             tabelaProblema = 'TBL_HANDOVER'
             for i in range(len(dfProblemas)):
